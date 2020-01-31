@@ -14,6 +14,7 @@
 
 using namespace std;
 
+
 void dibujarQuads() {
 	glBegin(GL_QUADS);
 	glColor3f(0.4f, 0.8f, 0.0f);
@@ -112,18 +113,66 @@ void dibujarLineas() {
 }
 
 float posXTriangulo = 0.0f, posYTriangulo = 0.0f;
+//declarar una ventana
+GLFWwindow* window;
+double tiempoAnterior;
+double tiempoActual;
+double velocidadTriangulo = 0.7;
 
 void teclado_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && key == GLFW_KEY_RIGHT)
 	{
-		posXTriangulo += 0.001;
+		posXTriangulo += 0.009;
 	}
+
+	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && key == GLFW_KEY_LEFT)
+	{
+		posXTriangulo += -0.009;
+	}
+
+	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && key == GLFW_KEY_UP)
+	{
+		posYTriangulo += 0.009;
+	}
+
+	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && key == GLFW_KEY_DOWN)
+	{
+		posYTriangulo += -0.009;
+	}
+
+	tiempoAnterior = tiempoActual;
 }
 
 void actualizar()
 {
-	
+	tiempoActual = glfwGetTime();
+	double tiempoDiferencial = tiempoActual - tiempoAnterior;
+
+	int estadoDerecha = glfwGetKey(window, GLFW_KEY_RIGHT);
+	int estadoIzquierda = glfwGetKey(window, GLFW_KEY_LEFT);
+	int estadoArriba = glfwGetKey(window, GLFW_KEY_UP);
+	int estadoAbajo = glfwGetKey(window, GLFW_KEY_DOWN);
+
+	if (estadoDerecha == GLFW_PRESS)
+	{
+		posXTriangulo += 0.02 * tiempoDiferencial;
+	}
+
+	if (estadoIzquierda == GLFW_PRESS)
+	{
+		posXTriangulo -= 0.02 * tiempoDiferencial;
+	}
+
+	if (estadoArriba == GLFW_PRESS)
+	{
+		posYTriangulo += 0.02 * tiempoDiferencial;
+	}
+
+	if (estadoAbajo == GLFW_PRESS)
+	{
+		posYTriangulo -= 0.02 * tiempoDiferencial;
+	}
 }
 
 void dibujar() {
@@ -145,8 +194,6 @@ void dibujar() {
 
 int main()
 {
-   //declarar una ventana
-	GLFWwindow* window;
 
 	//Si no se pudo iniciar GLFW
 	//Terminamos ejecucion
@@ -180,7 +227,7 @@ int main()
 	cout << "Version OpenGL: " << versionGL;
 
 	//establecemos que con cada evento de teclado se llama a la funcion teclado_callback
-	glfwSetKeyCallback(window, teclado_callback);
+	///glfwSetKeyCallback(window, teclado_callback);
 
 	//ciclo de dibujo (Draw loop)
 	while (!glfwWindowShouldClose(window))
